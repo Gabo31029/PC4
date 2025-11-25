@@ -11,10 +11,16 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 def register_routes(app):
     app.register_blueprint(api_bp)
 
-@api_bp.route('/register', methods=['POST'])
+@api_bp.route('/register', methods=['POST', 'OPTIONS'])
 def register():
+    if request.method == 'OPTIONS':
+        return '', 200
+    
     try:
         data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+            
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
@@ -48,7 +54,10 @@ def register():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Registration error: {str(e)}")  # Debug log
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'Registration failed: {str(e)}'}), 500
 
 @api_bp.route('/login', methods=['POST'])
 def login():

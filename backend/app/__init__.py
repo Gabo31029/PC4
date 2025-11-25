@@ -16,7 +16,8 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     jwt.init_app(app)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # CORS configuration - allow all origins for LAN access
+    CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
     socketio.init_app(app, cors_allowed_origins="*", async_mode='threading')
     
     # Create uploads directory

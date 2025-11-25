@@ -40,9 +40,12 @@ export const useAuthStore = defineStore('auth', () => {
       
       return { success: true }
     } catch (error) {
+      console.error('Registration error:', error)
+      console.error('Response:', error.response)
+      const errorMessage = error.response?.data?.error || error.message || 'Registration failed'
       return { 
         success: false, 
-        error: error.response?.data?.error || 'Registration failed' 
+        error: errorMessage
       }
     }
   }

@@ -22,10 +22,14 @@ api.interceptors.request.use(
   }
 )
 
-// Handle 401 errors
+// Handle errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', error)
+    if (error.code === 'ECONNREFUSED' || error.message.includes('Network Error')) {
+      console.error('Cannot connect to server. Check if server is running and IP is correct.')
+    }
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
       window.location.href = '/login'
